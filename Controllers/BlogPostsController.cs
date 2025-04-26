@@ -222,7 +222,7 @@ namespace TheBigBrainBlog.API.Controllers
         public async Task<IActionResult> DeleteBlogPost([FromRoute] Guid id)
         {
             BlogPost? response = await _blogPostRepository.DeleteBlogPostAsync(id);
-            if(response == null)
+            if (response == null)
             {
                 return NotFound();
             }
@@ -247,6 +247,51 @@ namespace TheBigBrainBlog.API.Controllers
             };
 
             return Ok(requestedBlogPost);
+        }
+
+        [HttpGet("GetBlogPostByUrlHandle/{urlHandle}")]
+        public async Task<IActionResult> GetBlogPostByUrlHandle([FromRoute] string urlHandle)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(urlHandle))
+                {
+                    return BadRequest("Invalid Url Handle");
+                }
+
+                BlogPost? blogPost = await _blogPostRepository.GetBlogPostByUrlHandleAsync(urlHandle);
+
+                if (blogPost == null)
+                {
+                    return NotFound("Request Not found with the urlHandle: " + urlHandle);
+                }
+
+                // Domain to Dto
+                BlogPostDTO requestedBlogPost = new BlogPostDTO()
+                {
+                    Id = blogPost.Id,
+                    Title = blogPost.Title,
+                    ShortDescription = blogPost.ShortDescription,
+                    Content = blogPost.Content,
+                    FeaturedImgUrl = blogPost.FeaturedImgUrl,
+                    UrlHandle = blogPost.UrlHandle,
+                    PublishedDate = blogPost.PublishedDate,
+                    Author = blogPost.Author,
+                    IsVisible = blogPost.IsVisible,
+                    Categories = blogPost.Categories.Select(c => new CategoryDto()
+                    {
+                        Id = c.Id,
+                        Name = c.Name,
+                        UrlHandle = c.UrlHandle
+                    }).ToList()
+                };
+
+                return Ok(requestedBlogPost);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
     }
 }

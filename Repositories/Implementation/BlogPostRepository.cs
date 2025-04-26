@@ -59,5 +59,10 @@ namespace TheBigBrainBlog.API.Repositories.Implementation
             _context.SaveChanges();
             return post;
         }
+
+        public async Task<BlogPost?> GetBlogPostByUrlHandleAsync(string url)
+        {
+            return await _context.BlogPosts.Include(url => url.Categories).FirstOrDefaultAsync(post => post.UrlHandle == url);
+        }
     }
 }

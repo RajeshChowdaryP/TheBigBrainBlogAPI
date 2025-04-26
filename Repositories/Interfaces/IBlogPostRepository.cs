@@ -10,5 +10,6 @@ namespace TheBigBrainBlog.API.Repositories.Interfaces
         Task<BlogPost?> GetBlogpostById(Guid Id);
         Task<BlogPost?> UpdateBlogPost(BlogPost request);
         Task<BlogPost?> DeleteBlogPostAsync(Guid id);
+        Task<BlogPost?> GetBlogPostByUrlHandleAsync(string url);
     }
 }
