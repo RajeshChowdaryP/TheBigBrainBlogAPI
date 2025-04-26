@@ -1,0 +1,28 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/TheBigBrainBlog.API
+
+# Build artifacts
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+
+# Visual Studio-specific files
+.vs/
+
+# Dependency directories
+packages/
+node_modules/
+
+# Configuration files with sensitive data
+# appsettings.*.json
+# secrets.json
+
+# Publish output
+publish/
+out/
