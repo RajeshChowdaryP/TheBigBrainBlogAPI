@@ -3,8 +3,11 @@
  another important function is this file is to configure the http request pipeline and by using the request pipeline we add middleware software that is assembled into 
  the application pipeline to handle responses and requests */
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TheBigBrainBlog.API.Data;
 using TheBigBrainBlog.API.Repositories.Implementation;
@@ -34,10 +37,64 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("TheBigBrainBlogConnectionString"));
 });
+
+// inject IdentityDbContext class file to use AuthDbContext to communicate with DB in the application
+builder.Services.AddDbContext<AuthDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("TheBigBrainBlogConnectionString"));
+});
+
 // this is the DI. we are telling when we inject ICategoryRepository use the implementation of ICategoryRepository in CategoryRepository
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IBlogPostRepository, BlogPostRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
+
+// this is used to configure the identity in the application
+builder.Services.AddIdentityCore<IdentityUser>(options =>
+{
+    //options.User.RequireUniqueEmail = true; // this is used to make the email unique in the application
+}).AddRoles<IdentityRole>() // this is used to add roles in the application
+.AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("TheBigBrainBlog") // this is used to add token provider in the application
+.AddEntityFrameworkStores<AuthDbContext>() // this is used to add the DbContext in the application
+.AddDefaultTokenProviders(); // this is used to add default token providers in the application
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    // Password settings
+    options.Password.RequireDigit = false; // Require at least one digit in the password
+    options.Password.RequiredLength = 8; // Minimum length of the password
+    options.Password.RequireNonAlphanumeric = false; // Do not require non-alphanumeric characters
+    options.Password.RequireUppercase = false; // Require at least one uppercase letter in the password
+    options.Password.RequireLowercase = false; // Require at least one lowercase letter in the password
+    options.Password.RequiredUniqueChars = 1; // Require at least one unique character in the password
+
+    // User settings
+    //options.User.RequireUniqueEmail = true; // Require unique email addresses for users
+});
+
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//});
+
+// Configure JWT authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            AuthenticationType = "Jwt",
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+            //IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"])),
+        };
+    });
 
 // application build
 var app = builder.Build();
@@ -62,6 +119,10 @@ app.UseCors(options =>
     options.AllowAnyMethod();
 });
 
+// this is used to use authentication in the application
+app.UseAuthentication();
+
+// this is used to use authorization in the application
 app.UseAuthorization();
 
 app.UseStaticFiles(new StaticFileOptions
