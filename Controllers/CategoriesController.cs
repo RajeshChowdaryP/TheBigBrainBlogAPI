@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TheBigBrainBlog.API.Data;
 using TheBigBrainBlog.API.Models.Domain;
@@ -50,6 +51,7 @@ namespace TheBigBrainBlog.API.Controllers
         }
 
         [HttpGet("GetAllCategories")]
+        [Authorize]
         public async Task<IActionResult> GetAllCategories()
         {
             var categories = await _categoryRepository.GetCategoriesAsync();

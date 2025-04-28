@@ -48,6 +48,7 @@ builder.Services.AddDbContext<AuthDbContext>(options =>
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IBlogPostRepository, BlogPostRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
+builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 
 // this is used to configure the identity in the application
 builder.Services.AddIdentityCore<IdentityUser>(options =>

@@ -17,8 +17,13 @@ namespace TheBigBrainBlog.API.Data
 
             // Customize the Identity model if needed
             // Create unique IDs for roles
-            var readerRoleID = Guid.NewGuid().ToString();
-            var writerRoleID = Guid.NewGuid().ToString();
+            //var readerRoleID = Guid.NewGuid().ToString();
+            //var writerRoleID = Guid.NewGuid().ToString();
+
+            var readerRoleID = "36cd2a2a-6aba-4e50-9150-93c0f7cf8ec2";
+            var writerRoleID = "7c94ed92-705d-42cf-9b48-a62277dab155";
+
+
 
             // Create Readers and Writers roles
             var roles = new List<IdentityRole>
