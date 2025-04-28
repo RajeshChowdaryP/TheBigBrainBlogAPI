@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TheBigBrainBlog.API.Models.Domain;
 using TheBigBrainBlog.API.Models.DTO;
@@ -20,6 +21,7 @@ namespace TheBigBrainBlog.API.Controllers
         }
 
         [HttpPost("CreateBlogPost")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> CreateBlogPost([FromBody] CreateBlogPostRequestDTO post)
         {
             try
@@ -155,6 +157,7 @@ namespace TheBigBrainBlog.API.Controllers
         }
 
         [HttpPut("UpdateBlogpostById/{id:Guid}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> UpdateBlogpostById([FromRoute] Guid id, [FromBody] UpdateBlogPostDTO post)
         {
             try
@@ -219,6 +222,7 @@ namespace TheBigBrainBlog.API.Controllers
 
 
         [HttpDelete("DeleteBlogPost/{id:Guid}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> DeleteBlogPost([FromRoute] Guid id)
         {
             BlogPost? response = await _blogPostRepository.DeleteBlogPostAsync(id);

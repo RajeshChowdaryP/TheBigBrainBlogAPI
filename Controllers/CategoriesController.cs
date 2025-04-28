@@ -20,6 +20,7 @@ namespace TheBigBrainBlog.API.Controllers
         }
 
         [HttpPost("CreateCategory")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryRequestDto request)
         {
             try
@@ -51,7 +52,7 @@ namespace TheBigBrainBlog.API.Controllers
         }
 
         [HttpGet("GetAllCategories")]
-        [Authorize]
+        //[Authorize(Roles = "Writer,Reader")]
         public async Task<IActionResult> GetAllCategories()
         {
             var categories = await _categoryRepository.GetCategoriesAsync();
@@ -91,6 +92,7 @@ namespace TheBigBrainBlog.API.Controllers
         }
 
         [HttpPut("UpdateCategory/{id}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> UpdateCategory([FromRoute] Guid id, [FromBody] UpdateCategoryRequestDto category) 
         {
             Category updateRequiredItemData = new Category
@@ -118,6 +120,7 @@ namespace TheBigBrainBlog.API.Controllers
         }
 
         [HttpDelete("DeleteCategory/{id}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> DeleteCategory([FromRoute] Guid id)
         {
             var response = await _categoryRepository.DeleteCategory(id);
