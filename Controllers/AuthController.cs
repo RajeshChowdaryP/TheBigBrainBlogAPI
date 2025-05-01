@@ -34,7 +34,7 @@ namespace TheBigBrainBlog.API.Controllers
             // Check if the email already exists
             if (await CheckExistingEmail(request.Email))
             {
-                ModelState.AddModelError("", "Email already exists");
+                ModelState.AddModelError("Message", "Email already exists");
                 return ValidationProblem(ModelState);
             }
 
@@ -72,7 +72,7 @@ namespace TheBigBrainBlog.API.Controllers
                     {
                         foreach (var error in identityResult.Errors)
                         {
-                            ModelState.AddModelError("", error.Description);
+                            ModelState.AddModelError("Message", error.Description);
                         }
                     }
                 }
@@ -87,7 +87,7 @@ namespace TheBigBrainBlog.API.Controllers
                 {
                     foreach (var error in identityResult.Errors)
                     {
-                        ModelState.AddModelError("", error.Description);
+                        ModelState.AddModelError("Message", error.Description);
                     }
                 }
             }
