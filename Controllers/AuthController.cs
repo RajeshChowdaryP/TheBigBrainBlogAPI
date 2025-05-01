@@ -31,6 +31,13 @@ namespace TheBigBrainBlog.API.Controllers
             // Create the user in the database
             var identityResult = await _userManager.CreateAsync(identityUser, request.Password);
 
+            // Check if the email already exists
+            if (await CheckExistingEmail(request.Email))
+            {
+                ModelState.AddModelError("", "Email already exists");
+                return ValidationProblem(ModelState);
+            }
+
             if (identityResult.Succeeded)
             {
                 // Assign a role to the user (optional)
@@ -123,7 +130,19 @@ namespace TheBigBrainBlog.API.Controllers
             return ValidationProblem(ModelState);
         }
 
-
+        private async Task<bool> CheckExistingEmail(string email)
+        {
+            if(string.IsNullOrEmpty(email))
+            {
+                return false;
+            }
+            var identityUser = await _userManager.FindByEmailAsync(email);
+            if (identityUser is not null)
+            {
+                return true;
+            }
+            return false;
+        }
 
         //[HttpPost("Login")]
         //public IActionResult Login([FromBody] LoginRequestDto request)
