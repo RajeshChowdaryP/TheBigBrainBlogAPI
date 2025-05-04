@@ -6,7 +6,7 @@ namespace TheBigBrainBlog.API.Repositories.Interfaces
     {
         Task<Category> CreateCategory(Category category);
 
-        Task<IEnumerable<Category>> GetCategoriesAsync(string? query = null);
+        Task<IEnumerable<Category>> GetCategoriesAsync(string? query = null, string? sortBy = null, string? sortByDirection = null);
         Task<Category?> GetCategoryById(Guid Id);
 
         Task<Category?> UpdateCategory(Category category);

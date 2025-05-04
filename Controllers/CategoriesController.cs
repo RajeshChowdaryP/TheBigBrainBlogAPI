@@ -51,15 +51,14 @@ namespace TheBigBrainBlog.API.Controllers
             }
         }
 
-        // https://localhost:7183/api/Categories/GetAllCategories?query=filterValue
-        // server side filtering using qurey params
+        // https://localhost:7183/api/Categories/GetAllCategories?query=filterValue&sortBy=name&sortDirection=desc
         // parameter nameing should match with the query param
         // we are using query params beacause query params are optional
         [HttpGet("GetAllCategories")]
         //[Authorize(Roles = "Writer,Reader")]
-        public async Task<IActionResult> GetAllCategories([FromQuery] string? query)
+        public async Task<IActionResult> GetAllCategories([FromQuery] string? query, [FromQuery] string? sortBy, [FromQuery] string? sortDirection)
         {
-            var categories = await _categoryRepository.GetCategoriesAsync(query);
+            var categories = await _categoryRepository.GetCategoriesAsync(query, sortBy, sortDirection);
 
             // map domain model to Dto
             var response = new List<CategoryDto>();

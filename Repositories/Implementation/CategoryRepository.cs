@@ -25,7 +25,7 @@ namespace TheBigBrainBlog.API.Repositories.Implementation
             return category;
         }
 
-        public async Task<IEnumerable<Category>> GetCategoriesAsync(string? query = null)
+        public async Task<IEnumerable<Category>> GetCategoriesAsync(string? query = null, string? sortBy = null, string? sortByDirection = null)
         {
             // Query  
             var categories = _dbContext.Categories.AsQueryable<Category>();
@@ -37,6 +37,17 @@ namespace TheBigBrainBlog.API.Repositories.Implementation
             }
 
             // Sorting  
+            if (!string.IsNullOrWhiteSpace(sortBy))
+            {
+                if(string.Equals(sortBy, "Name", StringComparison.OrdinalIgnoreCase)) // Here name is the column name that we given in the category domain model
+                {
+                    var isAsc = string.Equals(sortByDirection, "asc", StringComparison.OrdinalIgnoreCase) ? true : false;
+
+                    categories = isAsc ? categories.OrderBy(c => c.Name) : categories.OrderByDescending(c => c.Name);
+                }
+
+                // We can add multiple sorts for different columns
+            }
 
             // Pagination  
 
