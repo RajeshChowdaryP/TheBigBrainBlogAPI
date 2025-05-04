@@ -25,10 +25,22 @@ namespace TheBigBrainBlog.API.Repositories.Implementation
             return category;
         }
 
-        public async Task<IEnumerable<Category>> GetCategoriesAsync()
+        public async Task<IEnumerable<Category>> GetCategoriesAsync(string? query = null)
         {
-            return await _dbContext.Categories.ToListAsync();
+            // Query  
+            var categories = _dbContext.Categories.AsQueryable<Category>();
 
+            // Filtering  
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                categories = categories.Where(c => c.Name.Contains(query)); // c.Name.Contains(query, StringComparison.OrdinalIgnoreCase()) ordinalIgnoreCase helps us to ignore the case matching and only compare the text but EF Core handle it bydefault so no need to add StringComparison.OrdinalIgnoreCase() 
+            }
+
+            // Sorting  
+
+            // Pagination  
+
+            return await categories.ToListAsync();
         }
 
         public async Task<Category?> UpdateCategory(Category categoryData)
