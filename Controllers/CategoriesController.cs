@@ -56,9 +56,9 @@ namespace TheBigBrainBlog.API.Controllers
         // we are using query params beacause query params are optional
         [HttpGet("GetAllCategories")]
         //[Authorize(Roles = "Writer,Reader")]
-        public async Task<IActionResult> GetAllCategories([FromQuery] string? query, [FromQuery] string? sortBy, [FromQuery] string? sortDirection)
+        public async Task<IActionResult> GetAllCategories([FromQuery] string? query, [FromQuery] string? sortBy, [FromQuery] string? sortDirection, [FromQuery] int? pageNumber, [FromQuery] int? pageSize)
         {
-            var categories = await _categoryRepository.GetCategoriesAsync(query, sortBy, sortDirection);
+            var categories = await _categoryRepository.GetCategoriesAsync(query, sortBy, sortDirection, pageNumber, pageSize);
 
             // map domain model to Dto
             var response = new List<CategoryDto>();

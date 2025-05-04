@@ -25,7 +25,7 @@ namespace TheBigBrainBlog.API.Repositories.Implementation
             return category;
         }
 
-        public async Task<IEnumerable<Category>> GetCategoriesAsync(string? query = null, string? sortBy = null, string? sortByDirection = null)
+        public async Task<IEnumerable<Category>> GetCategoriesAsync(string? query = null, string? sortBy = null, string? sortByDirection = null, int? pageNumber = 1, int? pageSize = 100)
         {
             // Query  
             var categories = _dbContext.Categories.AsQueryable<Category>();
@@ -39,7 +39,8 @@ namespace TheBigBrainBlog.API.Repositories.Implementation
             // Sorting  
             if (!string.IsNullOrWhiteSpace(sortBy))
             {
-                if(string.Equals(sortBy, "Name", StringComparison.OrdinalIgnoreCase)) // Here name is the column name that we given in the category domain model
+                // Name column sorting
+                if(string.Equals(sortBy, "Name", StringComparison.OrdinalIgnoreCase)) // Here Name is the column name that we given in the category domain model
                 {
                     var isAsc = string.Equals(sortByDirection, "asc", StringComparison.OrdinalIgnoreCase) ? true : false;
 
@@ -50,6 +51,11 @@ namespace TheBigBrainBlog.API.Repositories.Implementation
             }
 
             // Pagination  
+            // pageNumber 1, pageSize 3, skip 0, take 3 (1,2,3)
+            // pageNumber 2, pageSize 3, skip 3, take 3 (4,5,6)
+            // pageNumber 3, pageSize 3, skip 6, take 3 (7,8,9)
+            var skipResults = (pageNumber -1) * pageSize;
+            categories = categories.Skip(skipResults ?? 0).Take(pageSize ?? 100);
 
             return await categories.ToListAsync();
         }
