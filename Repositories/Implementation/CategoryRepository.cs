@@ -92,6 +92,11 @@ namespace TheBigBrainBlog.API.Repositories.Implementation
             _dbContext.SaveChanges();
             return existingCategory;
         }
+
+        public async Task<int?> GetCategoryCount()
+        {
+            return await _dbContext.Categories.CountAsync();
+        }
     }
 
 }

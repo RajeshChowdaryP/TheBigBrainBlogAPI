@@ -11,5 +11,6 @@ namespace TheBigBrainBlog.API.Repositories.Interfaces
 
         Task<Category?> UpdateCategory(Category category);
         Task<Category?> DeleteCategory(Guid id);
+        Task<int?> GetCategoryCount();
     }
 }

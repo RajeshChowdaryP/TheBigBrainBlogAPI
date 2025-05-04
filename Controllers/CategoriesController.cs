@@ -139,5 +139,12 @@ namespace TheBigBrainBlog.API.Controllers
             };
             return Ok(deletedcategory);
         }
+
+        [HttpGet("GetCategoryCount")]
+        public async Task<IActionResult> GetCategoryCount()
+        {
+            var categoryCount = await _categoryRepository.GetCategoryCount();
+            return Ok(categoryCount);
+        }
     }
 }
